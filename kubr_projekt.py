@@ -1,7 +1,7 @@
 """
 projekt.py: třetí projekt do Engeto Python Akademie
 
-author: zhulenej bombardak
+author: Jan Kubr
 """
 
 import sys
@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 
 def parse_arguments():
     if len(sys.argv) != 3:
-        print("❌ Chyba: Zadej 2 argumenty – URL a název výstupního souboru.")
+        print("Chyba: Zadej 2 argumenty – URL a název výstupního souboru.")
         sys.exit(1)
     return sys.argv[1], sys.argv[2]
 
@@ -19,14 +19,14 @@ def get_soup(url):
     r = requests.get(url)
     r.encoding = 'utf-8'
     if r.status_code != 200:
-        print(f"❌ Chyba při načítání stránky: {url}")
+        print(f"Chyba při načítání stránky: {url}")
         sys.exit(1)
     return BeautifulSoup(r.text, 'html.parser')
 
 def get_links(soup, base_url):
     links = []
     table = soup.find('table')
-    rows = table.find_all('tr')[2:]  # přeskočí hlavičku
+    rows = table.find_all('tr')[2:]
 
     for row in rows:
         tds = row.find_all('td')
@@ -55,7 +55,6 @@ def main():
     soup = get_soup(url)
     links = get_links(soup, base_url)
 
-    # první obec pro získání názvů stran
     _, _, first_link = links[0]
     first_soup = get_soup(first_link)
     _, _, _, example_votes = get_votes(first_soup)
@@ -72,7 +71,7 @@ def main():
             row = [code, name, registered, envelopes, valid] + [votes.get(party, '0') for party in party_names]
             writer.writerow(row)
 
-    print(f"✅ HOTOVO! Výsledky jsou v souboru: {output}")
+    print(f"Hotovo! Výsledky jsou v souboru: {output}")
 
 if __name__ == "__main__":
     main()
